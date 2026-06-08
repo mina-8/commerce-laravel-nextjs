@@ -28,7 +28,7 @@ const Home = () => {
                         category:categoryId
                     }
                 })
-                console.log(res.data);
+                
                 setProducts(res.data.products);
                 setCategories(res.data.categories);
                 setBrands(res.data.brands);
@@ -36,7 +36,7 @@ const Home = () => {
             } catch (error) {
                 const err = error as AxiosError<{ message: string }>;
                 setLoading(false);
-                console.log(err.response?.data);
+                
             }
         }
         fetchData(page);

@@ -26,4 +26,9 @@ class ProductVariant extends Model
             'product_variant_attribute_values'
         );
     }
+
+    public function inventory()
+    {
+        return $this->hasOne(Inventory::class);
+    }
 }

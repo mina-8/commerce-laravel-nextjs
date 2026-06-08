@@ -2,18 +2,22 @@ import React from 'react'
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
 import { Badge } from 'lucide-react'
 import { Button } from './ui/button'
+import { useRouter } from 'next/navigation'
 
 interface Props {
-    product:{
+    product: {
         id: number;
         name: string;
         description: string;
         price: number;
         image: string;
+        slug: string;
     }
 }
 
-const Productcard = ({product} : Props) => {
+const Productcard = ({ product }: Props) => {
+    const router = useRouter();
+    
     return (
         <Card className="relative mx-auto w-full max-w-sm pt-0 flex flex-col justify-between">
             <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
@@ -23,9 +27,7 @@ const Productcard = ({product} : Props) => {
                 className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
             />
             <CardHeader>
-                {/* <CardAction>
-                    <Badge variant="secondary">Featured</Badge>
-                </CardAction> */}
+
                 <CardTitle>{product.name}</CardTitle>
                 <CardDescription>
                     <div>
@@ -37,9 +39,10 @@ const Productcard = ({product} : Props) => {
                 </CardDescription>
             </CardHeader>
             <CardFooter
-            // className="self-end"
             >
-                <Button className="w-full">Show</Button>
+                <Button className="w-full cursor-pointer"
+                onClick={() => router.push(`/product/${product.slug}`)}
+                >Show</Button>
             </CardFooter>
         </Card>
     )

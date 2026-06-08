@@ -27,7 +27,7 @@ const Login = () => {
             router.push("/");
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
-            console.log(err.response?.data);
+            
             toast.warning(err.response?.data?.message);
             setLoading(false);
         }

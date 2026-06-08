@@ -11,11 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventories', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_variant_id')->constrained('product_variants')->cascadeOnDelete();
-            $table->integer('quantity');
-            $table->integer('reserved_quantity')->default(0);
+            $table->foreignId('user_id')->constrained();
+
+            $table->decimal('subtotal', 10, 2);
+            $table->decimal('shipping', 10, 2)->default(0);
+            $table->decimal('total', 10, 2);
+
+            $table->enum('status', ['pending', 'paid', 'failed', 'cancelled'])->default('pending');
+
             $table->timestamps();
         });
     }
@@ -25,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventories');
+        Schema::dropIfExists('orders');
     }
 };

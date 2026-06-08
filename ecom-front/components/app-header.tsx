@@ -3,10 +3,11 @@ import Link from 'next/link'
 import React, { useEffect } from 'react'
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from '@/context/ThemeToggle';
+import { ShoppingCart } from 'lucide-react';
 
 
 const AppHeader = () => {
-    const { user, logout } = useAuth();
+    const { user, logout  , countCart } = useAuth();
     const [scrolled, setscrolled] = React.useState(false);
     useEffect(()=>{
         const handleScroll = () => {
@@ -29,6 +30,16 @@ const AppHeader = () => {
             <div
                 className="flex items-center gap-4"
             >
+                <Link
+                href="/cart"
+                className="relative"
+                >
+
+                    <ShoppingCart />
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {countCart}
+                    </span>
+                </Link>
                 {user ? (
                     <>
                         <span

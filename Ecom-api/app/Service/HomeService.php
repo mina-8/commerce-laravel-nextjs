@@ -27,7 +27,7 @@ class HomeService
         $products = $query->with('defaultVariant:id,product_id,price,images')
             ->select('id', 'name', 'slug', 'description')
             ->latest()
-            ->paginate(2)
+            ->paginate(9)
             ->withQueryString();
 
         $products->getCollection()->transform(function ($product) {
