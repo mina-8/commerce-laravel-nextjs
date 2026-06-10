@@ -1,4 +1,5 @@
 "use client"
+import { useAuth } from '@/context/AuthContext';
 import axiosInstance from '@/lib/axios';
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -7,6 +8,7 @@ import React, { useState } from 'react'
 import { toast } from 'sonner';
 
 const SignUp = () => {
+  const { register } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({
@@ -22,8 +24,8 @@ const SignUp = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axiosInstance.post("/register", data);
-      
+      // const response = await axiosInstance.post("/register", data);
+      await register(data);
       router.push("/login");
     } catch (error: any) {
       

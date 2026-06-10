@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/context/ThemeProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "next-themes";
+import { CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,19 +35,21 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {/* <Providers> */}
+        
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
         >
           <AuthProvider>
+            <CartProvider>
             <AppHeader />
             <Toaster />
             {children}
+            </CartProvider>
           </AuthProvider>
         </ThemeProvider>
-        {/* </Providers> */}
+        
       </body>
     </html>
   );

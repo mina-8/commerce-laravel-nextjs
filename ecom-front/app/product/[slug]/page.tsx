@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 
 
 interface Product {
@@ -19,7 +20,8 @@ interface Product {
 }
 
 const ProductPage = () => {
-    const {user , addToCart} = useAuth();
+    const {user } = useAuth();
+    const {addToCart} = useCart()
     const router = useRouter();
     const params = useParams<{ slug: string }>();
     const slug = params.slug;

@@ -4,10 +4,12 @@ import React, { useEffect } from 'react'
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from '@/context/ThemeToggle';
 import { ShoppingCart } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 
 const AppHeader = () => {
-    const { user, logout  , countCart } = useAuth();
+    const { user, logout  } = useAuth();
+    const { countCart } = useCart();
     const [scrolled, setscrolled] = React.useState(false);
     useEffect(()=>{
         const handleScroll = () => {

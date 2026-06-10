@@ -1,10 +1,11 @@
 "use client"
-import { useAuth } from '@/context/AuthContext';
+
+import { useCart } from '@/context/CartContext';
 import axiosInstance from '@/lib/axios';
 import React, { useEffect, useState } from 'react'
 
 const CartPage = () => {
-    const { getCart, updateQuantity, removeFromCart } = useAuth();
+    const { getCart, updateQuantity, removeFromCart } = useCart();
     const [loading, setLoading] = useState(false);
     const [product, setProduct] = useState(null);
     const [cartData, setCartData] = useState(() => getCart());

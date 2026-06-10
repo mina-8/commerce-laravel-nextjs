@@ -134,6 +134,7 @@ class ProductSeeder extends Seeder
                             Inventory::create([
                                 'product_variant_id' => $variant->id,
                                 'quantity' => fake()->numberBetween(10, 500),
+                                'reserved_quantity' => 0,
                             ]);
 
                             $productVariantMap[$variant->id] = $variant;

@@ -3,68 +3,66 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "../lib/axios";
 import axiosInstance from "../lib/axios";
 
-type User ={
-    id:number;
-    name:string;
-    email:string;
+type User = {
+    id: number;
+    name: string;
+    email: string;
 }
 
 type AuthContextType = {
-    user:User | null;
-    loading:boolean;
-    login:(data:any)=>Promise<void>;
-    logout:()=>void;
-    addToCart:(variantId:number, quantity:number)=>void;
-    removeFromCart:(variantId:number)=>void;
-    updateQuantity: (variantId: number, quantity: number) => void;
-    countCart:number;
-    getCart:()=>any[];
+    user: User | null;
+    loading: boolean;
+    login: (data: any) => Promise<void>;
+    register: (data: any) => Promise<void>;
+    logout: () => void;
+    refreshUser: () => Promise<void>;
+
 }
 
 const AuthContext = createContext<AuthContextType>(null as any);
 
-export const AuthProvider = ({ children }: any) => {
-    const [user , setUser] = useState<User | null>(null);
-    const [countCart , setCountCart] = useState(0);
-    const [loading , setLoading] = useState(false);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
 
-    const updateCartCount = () => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const refreshUser = async () => {
+        const token = localStorage.getItem("token");
 
-    const count = cart.reduce(
-        (total: number, item: any) => total + item.quantity,
-        0
-    );
-
-    setCountCart(count);
-};
-    // load user once
-    useEffect(()=>{
-        const  token = localStorage.getItem("token");
-        if(!token) {
-            setLoading(false);
+        if (!token) {
+            setUser(null);
             return;
         }
 
-        axios.get("me")
-        .then((res) => {
+        try {
+            const res = await axiosInstance.get("/me");
             setUser(res.data);
-        })
-        .catch(() => setUser(null))
-        .finally(() => setLoading(false));
+        } catch (error) {
+            console.error(error);
+            setUser(null);
+            localStorage.removeItem("token");
+        }
+    }
 
-        updateCartCount();
-    } , []);
+
+    useEffect(() => {
+        refreshUser().finally(() => setLoading(false));
+    }, [])
+
+    // register function 
+    const register = async (data: any) => {
+        
+        await axiosInstance.post("/register", data);
+        await refreshUser();
+    }
 
     // login function
-    const login = async (data : any) => {
-
-        const res = await axios.post("/login" , data);
-
-        localStorage.setItem("token" , res.data.access_token);
+    const login = async (data: any) => {
+        const res = await axiosInstance.post("/login", data);
+        localStorage.setItem("token", res.data.access_token);
 
         setUser(res.data.user);
+        await refreshUser();
     }
 
     const logout = async () => {
@@ -73,55 +71,10 @@ export const AuthProvider = ({ children }: any) => {
         setUser(null);
     }
 
-    const addToCart = (variantId:number , quantity:number) => {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-        const existingItem = cart.find((item:any) => item.variantId === variantId);
-
-        if(existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            cart.push({ variantId, quantity });
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartCount();
-    }
-
-     const removeFromCart = (variantId:number) => {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-        const updatedCart = cart.filter((item:any) => item.variantId !== variantId);
-
-        localStorage.setItem("cart", JSON.stringify(updatedCart));
-        updateCartCount();
-     }
-
-    const updateQuantity = (variantId: number, quantity: number) => {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        const item = cart.find((item: any) => item.variantId === variantId);
-
-        if (item) {
-            item.quantity = quantity;
-            if (quantity <= 0) {
-                const updatedCart = cart.filter((item: any) => item.variantId !== variantId);
-                localStorage.setItem("cart", JSON.stringify(updatedCart));
-            } else {
-                localStorage.setItem("cart", JSON.stringify(cart));
-            }
-        }
-        updateCartCount();
-        // We need to trigger a state update in components using the cart
-        // This can be done by returning the new cart or having components refetch it
-    }
-
-     const getCart = () =>{
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        return cart;
-     }
 
     return (
-        <AuthContext.Provider value={{ user , loading , login , logout , addToCart , removeFromCart, updateQuantity , countCart , getCart }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     )

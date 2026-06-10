@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
 {
-    protected $fillable = ['product_variant_id', 'quantity'];
+    protected $fillable = ['product_variant_id', 'quantity' , 'reserved_quantity'];
 
     public function productVariant()
     {
